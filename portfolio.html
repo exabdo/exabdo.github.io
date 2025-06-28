@@ -2,274 +2,89 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio | Abdalrahman Elsheikh</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/portfolio.css">
     <style>
-        /* Basic styles */
-        body {
-            font-family: 'Jost', sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        header {
-            width: 100%;
-            background: #ffffff;
-            border-bottom: 1px solid #e0e0e0;
-            z-index: 1000;
-            position: relative;
-        }
-
-        header nav ul {
-            display: flex;
-            justify-content: center;
-            list-style: none;
-            margin: 0;
-            padding: 1rem 0;
-        }
-
-        header nav a {
-            text-decoration: none;
-            color: #555;
-            padding: 0.5rem 1.5rem;
-            font-weight: 500;
-            transition: color 0.3s, border-bottom-color 0.3s;
-            border-bottom: 2px solid transparent;
-        }
-
-        header nav a:hover {
-            color: #007bff;
-        }
-
-        header nav a.active {
-            color: #007bff;
-            border-bottom-color: #007bff;
-        }
+        .flipbook-viewport { width: 90vw; height: 80vh; margin: auto; position: relative; }
+        .flipbook { width: 800px; height: 600px; margin: auto; }
+        .flipbook .page, .flipbook .hard { width: 400px; height: 600px; }
+        .flipbook .page img { width: 100%; height: 100%; object-fit: contain; }
+        .nav-button { position: absolute; top: 50%; z-index: 10; background: rgba(0,0,0,0.3); color: #fff; border: none; border-radius: 50%; width: 48px; height: 48px; font-size: 2em; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        #prev-button { left: 10px; }
+        #next-button { right: 10px; }
         
-        main {
-            flex-grow: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
-            overflow: hidden;
-            position: relative;
-        }
-
-        footer {
-            background: #333;
-            color: #fff;
-            text-align: center;
-            padding: 1.5rem 0;
-            width: 100%;
-        }
-
-        /* Flipbook specific styles */
-        .flipbook-viewport {
-            width: 100%;
-            height: calc(100vh - 150px); /* Adjust based on header/footer height */
-            position: relative;
-        }
-
-        .flipbook {
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        
-        .flipbook .page {
-            background-color: white;
-        }
-
-        .flipbook .page img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain; /* Use contain to see the whole page without cropping */
-        }
-
-        .flipbook .hard {
-            background-color: #e9e9e9;
-            background-image: linear-gradient(to right, #f2f2f2, #d6d6d6);
-        }
-        
-        .flipbook .hard.p1, .flipbook .hard.p30 {
-            background-color: #c9c9c9;
-        }
-
-        /* Loading Spinner */
-        #loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            z-index: 100;
-        }
-
-        .spinner {
-            border: 8px solid #f3f3f3;
-            border-top: 8px solid #3498db;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            animation: spin 1s linear infinite;
-        }
-        
-        /* Navigation Controls */
-        .nav-button {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            padding: 1rem;
-            cursor: pointer;
-            z-index: 1001;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background-color 0.3s ease;
-        }
-        .nav-button:hover {
-            background-color: rgba(0, 0, 0, 0.8);
-        }
-        #prev-button { left: 20px; }
-        #next-button { right: 20px; }
-
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
     </style>
 </head>
 <body>
     <header>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="projects.html">Projects</a></li>
-                <li><a href="code.html">Code</a></li>
-                <li><a href="portfolio.html" class="active">Portfolio</a></li>
-                <li><a href="about.html">About Me</a></li>
-                <li><a href="contact.html">Contact</a></li>
-                <li><a href="ideas.html">Ideas</a></li>
-            </ul>
-        </nav>
-    </header>
-
-    <main>
-        <div id="loading">
-            <div class="spinner"></div>
-            <p>Loading Portfolio...</p>
+        <div class="container nav-container">
+            <a href="index.html" class="logo">AE</a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="code.html">Code</a></li>
+                    <li><a href="portfolio.html" class="active">Portfolio</a></li>
+                    <li><a href="about.html">About Me</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="ideas.html">Ideas</a></li>
+                </ul>
+            </nav>
         </div>
-
-        <button id="prev-button" class="nav-button" style="display: none;"><i class="fas fa-chevron-left"></i></button>
-        <div class="flipbook-viewport" style="visibility: hidden;">
-            <div id="flipbook">
-                <!-- IMPORTANT: Replace these placeholder images with your actual portfolio page images -->
-                <!-- The recommended size for your images is around 1240x1754 pixels for best quality -->
-                
+    </header>
+    <main style="position:relative;">
+        <button id="prev-button" class="nav-button">&#9664;</button>
+        <div class="flipbook-viewport">
+            <div id="flipbook" class="flipbook">
                 <!-- Cover -->
-                <div class="hard p1" style="background-image: url(https://placehold.co/1240x1754/333/fff?text=Cover);"></div> 
                 <div class="hard"></div>
-
-                <!-- Dynamically add pages here if you have many, or list them as before -->
-                <div class="page"><img src="https://placehold.co/1240x1754/f8f8f8/333?text=Page+1" alt="Page 1" onerror="this.onerror=null;this.src='https://placehold.co/1240x1754/f8f8f8/333?text=Image+Missing';"></div>
-                <div class="page"><img src="https://placehold.co/1240x1754/f8f8f8/333?text=Page+2" alt="Page 2" onerror="this.onerror=null;this.src='https://placehold.co/1240x1754/f8f8f8/333?text=Image+Missing';"></div>
-                <div class="page"><img src="https://placehold.co/1240x1754/f8f8f8/333?text=Page+3" alt="Page 3" onerror="this.onerror=null;this.src='https://placehold.co/1240x1754/f8f8f8/333?text=Image+Missing';"></div>
-                <div class="page"><img src="https://placehold.co/1240x1754/f8f8f8/333?text=Page+4" alt="Page 4" onerror="this.onerror=null;this.src='https://placehold.co/1240x1754/f8f8f8/333?text=Image+Missing';"></div>
-                <!-- ... Add the rest of your pages here ... -->
-                <div class="page"><img src="https://placehold.co/1240x1754/f8f8f8/333?text=Page+27" alt="Page 27" onerror="this.onerror=null;this.src='https://placehold.co/1240x1754/f8f8f8/333?text=Image+Missing';"></div>
-                <div class="page"><img src="https://placehold.co/1240x1754/f8f8f8/333?text=Page+28" alt="Page 28" onerror="this.onerror=null;this.src='https://placehold.co/1240x1754/f8f8f8/333?text=Image+Missing';"></div>
-
-                <!-- Back Cover -->
                 <div class="hard"></div>
-                <div class="hard p30" style="background-image: url(https://placehold.co/1240x1754/333/fff?text=Back+Cover);"></div>
+                <!-- Your images/pages -->
+                <div class="page"><img src="assets/anger hourse garden.jpg" alt=""></div>
+                <div class="page"><img src="assets/best emplyee.jpg" alt=""></div>
+                <div class="page"><img src="assets/Elevation.bmp" alt=""></div>
+                <div class="page"><img src="assets/hourse garden.jpg" alt=""></div>
+                <div class="page"><img src="assets/myphto.jpg" alt=""></div>
+                <div class="page"><img src="assets/personal infront emirates.jpg" alt=""></div>
+                <div class="page"><img src="assets/personal infront imarates.jpg" alt=""></div>
+                <div class="page"><img src="assets/point to emirates garden.jpg" alt=""></div>
+                <div class="page"><img src="assets/render 3d (2).jpg" alt=""></div>
+                <div class="page"><img src="assets/render 3d.jpg" alt=""></div>
+                <div class="page"><img src="assets/render tamouh tower.jpg" alt=""></div>
+                <div class="page"><img src="assets/ship in sea.jpg" alt=""></div>
+                <div class="page"><img src="assets/while rendering.jpeg" alt=""></div>
+                <div class="page"><img src="assets/wood on site (2).jpg" alt=""></div>
+                <div class="page"><img src="assets/wood on site (3).jpg" alt=""></div>
+                <div class="page"><img src="assets/wood on site.jpg" alt=""></div>
+                <!-- Back covers -->
+                <div class="hard"></div>
+                <div class="hard"></div>
             </div>
         </div>
-         <button id="next-button" class="nav-button" style="display: none;"><i class="fas fa-chevron-right"></i></button>
+        <button id="next-button" class="nav-button">&#9654;</button>
     </main>
-
     <footer>
         <p>&copy; 2025 Abdalrahman Elsheikh</p>
     </footer>
-    
-    <!-- Using CDN for libraries for simplicity -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
-
+    <script src="lib/turnjs/turn.min.js"></script>
     <script>
-        // We wrap the entire script in $(window).on('load', ...)
-        // This ensures that all content, including all images in the flipbook,
-        // is fully loaded before the script runs. This prevents the flipbook
-        // from getting stuck during initialization.
-        $(window).on('load', function () {
-
-            const flipbook = $('#flipbook');
-            const viewport = $('.flipbook-viewport');
-            const loading = $('#loading');
-
-            function resizeViewport() {
-                const w = viewport.width();
-                const h = viewport.height();
-                flipbook.turn('size', w, h);
-            }
-
-            // Initialize turn.js
-            flipbook.turn({
-                display: 'double', // Show two pages at once
-                acceleration: true, // Hardware acceleration
+        $(function() {
+            $("#flipbook").turn({
+                width: 800,
+                height: 600,
+                autoCenter: true,
                 elevation: 50,
                 gradients: true,
-                autoCenter: true, // This is key for centering
-                when: {
-                    started: function(e, pageObject, view) {
-                        // This event fires once the flipbook is ready
-                        resizeViewport();
-                        loading.hide();
-                        viewport.css({ visibility: 'visible' });
-                        $('.nav-button').show();
-                    },
-                    turned: function(e, page, view) {
-                        // Disable prev/next buttons at the start/end of the book
-                        $('#prev-button').prop('disabled', page === 1);
-                        $('#next-button').prop('disabled', page === $(this).turn('pages'));
-                    }
-                }
+                display: 'double'
             });
 
-            // Handle window resizing
-            $(window).on('resize', resizeViewport);
-
-            // --- Navigation Controls ---
-            $('#next-button').on('click', function() {
-                flipbook.turn('next');
+            $('#prev-button').click(function(){
+                $("#flipbook").turn('previous');
             });
-
-            $('#prev-button').on('click', function() {
-                flipbook.turn('previous');
-            });
-
-            $(document).on('keydown', function(e) {
-                if (e.keyCode === 37) { // Left arrow
-                    flipbook.turn('previous');
-                } else if (e.keyCode === 39) { // Right arrow
-                    flipbook.turn('next');
-                }
+            $('#next-button').click(function(){
+                $("#flipbook").turn('next');
             });
         });
     </script>
