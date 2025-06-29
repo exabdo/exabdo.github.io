@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Repotage Tower - Abu Dhabi | Abdalrahman Elsheikh</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/portfolio.css">
+    <style>
+        .flipbook-viewport { width: 90vw; height: 80vh; margin: auto; position: relative; }
+        .flipbook { width: 800px; height: 600px; margin: auto; }
+        .flipbook .page, .flipbook .hard { width: 400px; height: 600px; }
+        .flipbook .page img { width: 100%; height: 100%; object-fit: contain; }
+        .nav-button { position: absolute; top: 50%; z-index: 10; background: rgba(0,0,0,0.3); color: #fff; border: none; border-radius: 50%; width: 48px; height: 48px; font-size: 2em; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        #prev-button { left: 10px; }
+        #next-button { right: 10px; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container nav-container">
+            <a href="index.html" class="logo">AE</a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="projects.html">Projects</a></li>
+                    <li><a href="code.html">Code</a></li>
+                    <li><a href="portfolio.html">Portfolio</a></li>
+                    <li><a href="about.html">About Me</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="ideas.html">Ideas</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main style="position:relative;">
+        <button id="prev-button" class="nav-button">&#9664;</button>
+        <div class="flipbook-viewport">
+            <div id="flipbook" class="flipbook">
+                <!-- Cover -->
+                <div class="hard"></div>
+                <div class="hard"></div>
+                <!-- Repotage Tower images -->
+                <div class="page"><img src="assets/REportage Tower/0 (49).jpg" alt="Repotage Tower Cover"></div>
+                 <div class="page"><img src="assets/REportage Tower/0.jpg" alt="Repotage Tower Page 0"></div>
+                <div class="page"><img src="assets/REportage Tower/0 (2).jpg" alt="Repotage Tower Page 2"></div>
+                <div class="page"><img src="assets/REportage Tower/0 (3).jpg" alt="Repotage Tower Page 3"></div>
+                <div class="page"><img src="assets/REportage Tower/0 (4).jpg" alt="Repotage Tower Page 4"></div>
+                <div class="page"><img src="assets/REportage Tower/0 (5).jpg" alt="Repotage Tower Page 5"></div>
+                <div class="page"><img src="assets/REportage Tower/0 (6).jpg" alt="Repotage Tower Page 6"></div>
+                <div class="page"><img src="assets/REportage Tower/0 (7).jpg" alt="Repotage Tower Page 7"></div>
+                <div class="page"><img src="assets/REportage Tower/0 (8).jpg" alt="Repotage Tower Page 8"></div>
+                <div class="page"><img src="assets/REportage Tower/0 (9).jpg" alt="Repotage Tower Page 9"></div>
+                <div class="page"><img src="assets/REportage Tower/0 (10).jpg" alt="Repotage Tower Page 10"></div>
+                <div class="page"><img src="assets/REportage Tower/0 (11).jpg" alt="Repotage Tower Page 11"></div>
+                <div class="page"><img src="assets/REportage Tower/0 (12).jpg" alt="Repotage Tower Page 12"></div>
+                <div class="page"><img src="assets/REportage Tower/0 (13).jpg" alt="Repotage Tower Page 13"></div>  
+                <!-- Add more pages as needed -->
+                <div class="hard"></div>
+                <div class="hard"></div>
+            </div>
+        </div>
+        <button id="next-button" class="nav-button">&#9654;</button>
+    </main>
+    <footer>
+        <p>&copy; 2025 Abdalrahman Elsheikh</p>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="lib/turnjs/turn.min.js"></script>
+    <script>
+        $(function() {
+            $("#flipbook").turn({
+                width: 800,
+                height: 600,
+                autoCenter: true,
+                elevation: 50,
+                gradients: true,
+                display: 'double'
+            });
+
+            $('#prev-button').click(function(){
+                $("#flipbook").turn('previous');
+            });
+            $('#next-button').click(function(){
+                $("#flipbook").turn('next');
+            });
+        });
+    </script>
+</body>
+</html>
