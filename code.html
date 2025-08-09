@@ -31,18 +31,14 @@
             border-radius: 8px;
             border: 1px solid #333;
         }
-        /* Styles for headers and subheaders in code.html */
-        .code-content h1, .code-content h2 {
-            color: white; /* Change header and subheader text color to white */
-        }
     </style>
 </head>
 <body>
     <canvas id="falling-code"></canvas>
     <div class="code-page-wrapper">
         <header>
-        <div class="nav-container">
-            <img src="assets/myphto.jpg" alt="Abdalrahman Elsheikh's Photo" class="logo">
+                   <div class="nav-container">
+            <img src="https://via.placeholder.com/150.png?text=Logo" alt="Logo" class="logo">
        
             <h1 class="fade-in">Abdalrahman Elsheikh</h1>
             <nav>
@@ -62,8 +58,7 @@
             <div class="code-content">
                 <button class="btn-back" onclick="history.back()">&larr; Go Back</button>
 
-                <h1>AutoCAD LISP Routines</h1>
-
+                <h1>Code & Scripts</h1>
                 <section>
                     <h2>COPYBLOCKTOALLCLOSED v07 working.lsp</h2>
                     <p>This LISP routine automates the placement of a selected AutoCAD block (including its attributes) into the approximate centroid of all closed polylines that reside on a user-defined layer. It's useful for quickly populating drawings with standard elements within enclosed areas.</p>
@@ -1394,3 +1389,70 @@
                 <section>
                     <h2>lineWeightZoomExtents.lsp</h2>
                     <p>This LISP routine (command `LWZE`) provides a quick utility to enhance drawing visibility. It automatically turns on the display of lineweights in AutoCAD and then performs a
+                <section>
+                    <h2>Python for GIS</h2>
+                    <p>Using Python to automate geospatial workflows in ArcGIS.</p>
+                    <pre><code class="python">
+import arcpy
+
+def analyze_data(input_fc):
+    desc = arcpy.Describe(input_fc)
+    print(f"Analyzing {desc.name}...")
+                    </code></pre>
+                </section>
+                <section>
+                    <h2>Video Demonstration</h2>
+                    <div class="video-wrapper">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                </section>
+            </div>
+        </main>
+        <footer>
+            <p>© 2025 Abdalrahman Elsheikh</p>
+        </footer>
+    </div>
+
+    <script>
+        hljs.highlightAll();
+
+        const canvas = document.getElementById('falling-code');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const characters = '01';
+        const charactersArray = characters.split('');
+
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+
+        const drops = [];
+        for (let x = 0; x < columns; x++) {
+            drops[x] = 1;
+        }
+
+        function draw() {
+            ctx.fillStyle = 'rgba(26, 26, 26, 0.3)'; // You can adjust the 0.3 value
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = charactersArray[Math.floor(Math.random() * charactersArray.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > .975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(draw, 100);
+    </script>
+</body>
+
+</html>
