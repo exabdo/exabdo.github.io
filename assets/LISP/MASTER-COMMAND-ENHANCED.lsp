@@ -1,254 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code | Abdalrahman Elsheikh</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="lib/highlight/styles/atom-one-dark.css">
-    <script src="lib/highlight/highlight.min.js"></script>
-    <style>
-        body {
-            background-color: #1a1a1a;
-            color: #f0f0f0;
-        }
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-        .code-page-wrapper {
-            position: relative;
-            z-index: 1;
-        }
-        /* New class for semi-transparent content background */
-        .code-content {
-            background-color: rgba(26, 26, 26, 0.85); /* 85% opaque black */
-            padding: 1.5rem;
-            border-radius: 8px;
-            border: 1px solid #333;
-        }
-        /* Styles for headers and subheaders in code.html */
-        .code-content h1, .code-content h2 {
-            color: white; /* Change header and subheader text color to white */
-        }
-    </style>
-</head>
-<body>
-    <canvas id="falling-code"></canvas>
-    <div class="code-page-wrapper">
-        <header>
-        <div class="nav-container">
-            <img src="assets/myphto.jpg" alt="Abdalrahman Elsheikh's Photo" class="logo">
-       
-            <h1 class="fade-in">Abdalrahman Elsheikh</h1>
-            <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="projects.html">Projects</a></li>
-                <li><a href="code.html">Code</a></li>
-                <li><a href="portfolio.html">Portfolio</a></li>
-                <li><a href="about.html">About Me</a></li>
-                <li><a href="contact.html">Contact</a></li>
-                <li><a href="ideas.html" class="active">Ideas</a></li>
-            </ul>
-            </nav>
-        </div>
-        </header>
-        <main class="container">
-            <div class="code-content">
-                <button class="btn-back" onclick="history.back()">&larr; Go Back</button>
-
-                <h1>AutoCAD LISP Routines</h1>
-
-                <section>
-                    <h2>COPYBLOCKTOALLCLOSED v07 working.lsp</h2>
-                    <p>This LISP routine automates the placement of a selected AutoCAD block (including its attributes) into the approximate centroid of all closed polylines that reside on a user-defined layer. It's useful for quickly populating drawings with standard elements within enclosed areas.</p>
-                    <pre><code class="lisp">
-(defun c:COPYBLOCKTOALLCLOSED ( / selBlock blockName blockAttribs blkLayer blkScale polySel polyLayer ss i ent entObj pt newBlk)
-  (vl-load-com)
-
-  ;; Helper: Get block attributes
-  (defun GetBlockAttributes (blk / result)
-    (setq result '())
-    (if blk
-      (foreach att (vlax-invoke (vlax-ename->vla-object blk) 'GetAttributes)
-        (setq result (cons (list (vla-get-TagString att) (vla-get-TextString att)) result))
-      )
-    )
-    result
-  )
-
-  ;; NEW HELPER: Get the approximate centroid of a polyline
-  (defun GetPolylineCentroid (pline_obj / coords num_verts i sum_x sum_y)
-    (setq coords (vlax-get pline_obj 'Coordinates)
-          num_verts (/ (length coords) 2)
-          i 0
-          sum_x 0.0
-          sum_y 0.0
-    )
-    (repeat num_verts
-      (setq sum_x (+ sum_x (nth i coords))
-            sum_y (+ sum_y (nth (1+ i) coords))
-            i (+ i 2)
-      )
-    )
-    (list (/ sum_x num_verts) (/ sum_y num_verts) 0.0)
-  )
-
-
-  ;; Ask user to select the source block
-  (prompt "\n📌 Select the source block reference (with attributes): ")
-  (setq selBlock (car (entsel "\nSelect block: ")))
-  (if (not selBlock)
-    (progn (prompt "\n⚠️ No block selected. Exiting.") (exit))
-  )
-
-  ;; Validate block type
-  (if (/= (cdr (assoc 0 (entget selBlock))) "INSERT")
-    (progn (prompt "\n❌ That is not a block. Exiting.") (exit))
-  )
-
-  ;; Extract block details
-  (setq blockName    (cdr (assoc 2 (entget selBlock))))
-  (setq blockAttribs (GetBlockAttributes selBlock))
-  (setq blkLayer     (cdr (assoc 8 (entget selBlock))))
-  (setq blkScale     (cdr (assoc 41 (entget selBlock)))) ; assume uniform scale
-
-  ;; Ask user to select a sample polyline
-  (prompt "\n📌 Select one closed polyline to define the target layer: ")
-  (setq polySel (car (entsel "\nSelect closed polyline: ")))
-  (if (not polySel)
-    (progn (prompt "\n⚠️ No polyline selected. Exiting.") (exit))
-  )
-
-  ;; Check it's a closed LWPOLYLINE
-  (if (or (/= (cdr (assoc 0 (entget polySel))) "LWPOLYLINE")
-          (/= 1 (logand (cdr (assoc 70 (entget polySel))) 1)))
-    (progn (prompt "\n❌ That is not a closed LWPOLYLINE. Exiting.") (exit))
-  )
-
-  ;; Get polyline layer
-  (setq polyLayer (cdr (assoc 8 (entget polySel))))
-
-  ;; Select all closed polylines on the same layer
-  (setq ss (ssget "_X" (list (cons 0 "LWPOLYLINE") (cons 8 polyLayer) (cons -4 "<AND") (cons 70 1) (cons -4 "AND>"))))
-  (if (not ss)
-    (progn (prompt "\n⚠️ No matching closed polylines found. Exiting.") (exit))
-  )
-
-  ;; Start placing blocks
-  (prompt (strcat "\n🔁 Inserting block \"" blockName "\" into closed polylines..."))
-
-  (setq i 0)
-  (repeat (sslength ss)
-    (setq ent (ssname ss i))
-    (setq entObj (vlax-ename->vla-object ent))
-
-    (if (= (vla-get-Closed entObj) :vlax-true)
-      (progn
-        ;; ***MODIFIED LINE***: Use the new centroid function instead of the midpoint of the perimeter
-        (setq pt (GetPolylineCentroid entObj))
-
-        ;; Insert block
-        (setq newBlk (vla-InsertBlock
-                       (vla-get-ModelSpace (vla-get-ActiveDocument (vlax-get-acad-object)))
-                       (vlax-3d-point pt)
-                       blockName
-                       blkScale blkScale blkScale
-                       0.0))
-
-        ;; Match source layer
-        (vla-put-Layer newBlk blkLayer)
-
-        ;; Copy attributes
-        (if newBlk
-            (if blockAttribs
-                (foreach att (vlax-invoke newBlk 'GetAttributes)
-                  (foreach attrPair blockAttribs
-                    (if (= (vla-get-TagString att) (car attrPair))
-                      (vla-put-TextString att (cadr attrPair))
-                    )
-                  )
-                )
-            )
-        )
-      )
-    )
-    (setq i (1+ i))
-  )
-
-  (prompt "\n✅ DONE: Blocks inserted into the center of all closed polylines.")
-  (princ)
-)
-                    </code></pre>
-                </section>
-
-                <section>
-                    <h2>FULL-UPDATE.lsp</h2>
-                    <p>This LISP routine performs a full update process on an AutoCAD drawing. It automates the updating of block attributes (like UnitNumber and FloorNumber) within defined unit and floor polylines. This script is designed to streamline the management of drawing data, ensuring consistency across various details such as spaces, doors, and windows.</p>
-                    <pre><code class="lisp">
-(defun c:FULL-UPDATE ( / *error* adoc allUnitPolylines allFloorPolylines i total)
-  (defun *error* (msg)
-    (if adoc (vla-endundomark adoc))
-    (if (not (wcmatch (strcase msg) "*QUIT*,*CANCEL*")) (princ (strcat "\nError: " msg)))
-    (princ)
-  )
-
-  (setq adoc (vla-get-activedocument (vlax-get-acad-object)))
-  (vla-startundomark adoc)
-
-  (princ "\n--- STARTING FULL UPDATE PROCESS ---")
-
-  ;; 1. Run Unit Updates
-  (princ "\n\n--- Step 1: Processing all unit boundaries ---")
-  (setq allUnitPolylines (ssget "_X" '((0 . "LWPOLYLINE") (8 . "Unit") (-4 . "&amp;") (70 . 1))))
-  (if allUnitPolylines
-    (progn
-      (setq total (sslength allUnitPolylines))
-      (princ (strcat "\nFound " (itoa total) " unit boundaries."))
-      (setq i 0)
-      (repeat total
-        (process-unit-polyline (ssname allUnitPolylines i))
-        (setq i (1+ i))
-      )
-    )
-    (princ "\nNo unit boundaries found on layer 'Unit'.")
-  )
-
-  ;; 2. Run Floor Updates
-  (princ "\n\n--- Step 2: Processing all floor boundaries ---")
-  (setq allFloorPolylines (ssget "_X" '((0 . "LWPOLYLINE") (8 . "Floor") (-4 . "&amp;") (70 . 1))))
-  (if allFloorPolylines
-    (progn
-      (setq total (sslength allFloorPolylines))
-      (princ (strcat "\nFound " (itoa total) " floor boundaries."))
-      (setq i 0)
-      (repeat total
-        (process-floor-polyline (ssname allFloorPolylines i))
-        (setq i (1+ i))
-      )
-    )
-    (princ "\nNo floor boundaries found on layer 'Floor'.")
-  )
-
-  (princ "\n\n--- FULL UPDATE PROCESS COMPLETE ---")
-  (vla-endundomark adoc)
-  (princ)
-)
-
-(princ "\nLoaded FULL-UPDATE command.")
-(princ)
-                    </code></pre>
-                </section>
-
-                <section>
-                    <h2>MASTER-COMMAND-ENHANCED.lsp</h2>
-                    <p>This is an enhanced master LISP command for AutoCAD that offers a comprehensive suite of tools for managing and analyzing drawing data. It features an interactive menu allowing users to perform operations such as updating unit and floor details, synchronizing block attributes (e.g., for doors and windows with spaces), calculating net areas, and analyzing/modifying door-space relationships. This script significantly streamlines complex architectural and spatial data management workflows.</p>
-                    <pre><code class="lisp">
 (vl-load-com)
 
 ;;;-------------------------------------------------------------------
@@ -257,7 +6,7 @@
 
 (defun get-attribute-value (block-obj tag-name / result)
   (setq tag-name (strcase tag-name))
-  (setq result (vl-some ' (lambda (att) 
+  (setq result (vl-some '(lambda (att)
                           (if (= (strcase (vla-get-tagstring att)) tag-name)
                             (vla-get-textstring att)
                           )
@@ -281,7 +30,7 @@
 )
 
 (defun get-polyline-vertices (pline-ent)
-  (mapcar 'cdr (vl-remove-if-not ' (lambda (x) (= (car x) 10)) (entget pline-ent)))
+  (mapcar 'cdr (vl-remove-if-not '(lambda (x) (= (car x) 10)) (entget pline-ent)))
 )
 
 (defun get-all-block-attributes (block-obj / attribs result)
@@ -289,7 +38,7 @@
   (setq attribs (vlax-invoke block-obj 'GetAttributes))
   (setq result nil)
   (foreach att attribs
-    (setq result (cons (list (vla-get-TagString att) (vla-get-TextString att)) result))
+    (setq result (cons (list (vla-get-tagstring att) (vla-get-textstring att)) result))
   )
   result
 )
@@ -301,8 +50,8 @@
 (defun analyze-door-space-relationships ( / all-doors all-spaces door-relationships i j door-ent door-vlist door-handle door-detail-set door-material door-type door-detail-obj space-ent space-vlist space-detail-set space-detail-obj space-usage space-num unit-num floor-num connected-spaces)
   "Analyzes relationships between doors and spaces"
   (princ "\n\n=== DOOR-SPACE RELATIONSHIP ANALYSIS ===")
-  (setq all-doors (ssget "_X" '((0 . "LWPOLYLINE") (8 . "door") (-4 . "&amp;") (70 . 1))))
-  (setq all-spaces (ssget "_X" '((0 . "LWPOLYLINE") (8 . "Space") (-4 . "&amp;") (70 . 1))))
+  (setq all-doors (ssget "_X" '((0 . "LWPOLYLINE") (8 . "door") (-4 . "&") (70 . 1))))
+  (setq all-spaces (ssget "_X" '((0 . "LWPOLYLINE") (8 . "Space") (-4 . "&") (70 . 1))))
   (setq door-relationships nil)
   
   (if (and all-doors all-spaces)
@@ -390,12 +139,12 @@
   door-relationships
 )
 
-(defun auto-set-door-materials-by-space (door-relationships / door-info door-handle connected-spaces space-info space-usage door-ent door-vlist door-detail-set door-detail-obj material-to-set updatedCount)
+(defun auto-set-door-materials-by-space (door-relationships / door-info door-handle connected-spaces space-info space-usage door-ent door-vlist door-detail-set door-detail-obj material-to-set updated-count)
   "Automatically sets door materials based on connected space types"
   (if door-relationships
     (progn
       (princ "\n\n=== AUTOMATIC DOOR MATERIAL ASSIGNMENT ===")
-      (setq updatedCount 0)
+      (setq updated-count 0)
       
       (foreach door-info door-relationships
         (setq door-handle (car door-info))
@@ -452,7 +201,7 @@
                       )
                     )
                     (princ ")")
-                    (setq updatedCount (1+ updatedCount))
+                    (setq updated-count (1+ updated-count))
                   )
                 )
               )
@@ -461,7 +210,7 @@
         )
       )
       
-      (princ (strcat "\n\nAutomatically updated " (itoa updatedCount) " doors based on space types."))
+      (princ (strcat "\n\nAutomatically updated " (itoa updated-count) " doors based on space types."))
     )
   )
 )
@@ -738,7 +487,7 @@
 (defun run-full-update-logic ( / allUnitPolylines allFloorPolylines i total allBuildingOutlines)
   (princ "\n--- STARTING FULL UPDATE PROCESS ---")
   (princ "\n\n--- Step 1: Processing all unit boundaries ---")
-  (setq allUnitPolylines (ssget "_X" '((0 . "LWPOLYLINE") (8 . "Unit") (-4 . "&amp;") (70 . 1))))
+  (setq allUnitPolylines (ssget "_X" '((0 . "LWPOLYLINE") (8 . "Unit") (-4 . "&") (70 . 1))))
   (if allUnitPolylines
     (progn
       (setq total (sslength allUnitPolylines))
@@ -751,9 +500,8 @@
     )
     (princ "\nNo unit boundaries found on layer 'Unit'.")
   )
-
   (princ "\n\n--- Step 2: Processing all floor boundaries ---")
-  (setq allFloorPolylines (ssget "_X" '((0 . "LWPOLYLINE") (8 . "Floor") (-4 . "&amp;") (70 . 1))))
+  (setq allFloorPolylines (ssget "_X" '((0 . "LWPOLYLINE") (8 . "Floor") (-4 . "&") (70 . 1))))
   (if allFloorPolylines
     (progn
       (setq total (sslength allFloorPolylines))
@@ -766,9 +514,8 @@
     )
     (princ "\nNo floor boundaries found on layer 'Floor'.")
   )
-
   (princ "\n\n--- Step 3: Renumbering spaces within building outlines ---")
-  (setq allBuildingOutlines (ssget "_X" '((0 . "LWPOLYLINE") (8 . "BuildingOutline") (-4 . "&amp;") (70 . 1))))
+  (setq allBuildingOutlines (ssget "_X" '((0 . "LWPOLYLINE") (8 . "BuildingOutline") (-4 . "&") (70 . 1))))
   (if allBuildingOutlines
     (progn
       (setq total (sslength allBuildingOutlines))
@@ -786,9 +533,9 @@
 
 (defun run-sync-logic ( / all-spaces all-doors all-windows i j space-ent space-vlist door-ent window-ent floor-val unit-val space-val space-detail-set space-detail-obj attrib)
   (princ "\n\n--- STARTING DETAIL SYNCHRONIZATION ---")
-  (setq all-spaces (ssget "_X" '((0 . "LWPOLYLINE") (8 . "Space") (-4 . "&amp;") (70 . 1))))
-  (setq all-doors (ssget "_X" '((0 . "LWPOLYLINE") (8 . "door") (-4 . "&amp;") (70 . 1))))
-  (setq all-windows (ssget "_X" '((0 . "LWPOLYLINE") (8 . "window") (-4 . "&amp;") (70 . 1))))
+  (setq all-spaces (ssget "_X" '((0 . "LWPOLYLINE") (8 . "Space") (-4 . "&") (70 . 1))))
+  (setq all-doors (ssget "_X" '((0 . "LWPOLYLINE") (8 . "door") (-4 . "&") (70 . 1))))
+  (setq all-windows (ssget "_X" '((0 . "LWPOLYLINE") (8 . "window") (-4 . "&") (70 . 1))))
   (if all-spaces
     (progn
       (princ (strcat "\nFound " (itoa (sslength all-spaces)) " space boundaries to process."))
@@ -796,11 +543,8 @@
       (repeat (sslength all-spaces)
         (setq space-ent (ssname all-spaces i))
         (princ (strcat "\n\n- Processing Space: " (vla-get-handle (vlax-ename->vla-object space-ent))))
-
-        ;; Get SpaceDetail attributes
         (setq space-vlist (get-polyline-vertices space-ent))
         (setq space-detail-set (ssget "_CP" space-vlist '((0 . "INSERT") (2 . "SpaceDetail"))))
-
         (if (and space-detail-set (= 1 (sslength space-detail-set)))
           (progn
             (setq space-detail-obj (vlax-ename->vla-object (ssname space-detail-set 0)))
@@ -813,8 +557,6 @@
               )
             )
             (princ (strcat "\n  - Found SpaceDetail. F:" floor-val " U:" unit-val " S:" space-val))
-
-            ;; Find and update connected doors
             (if all-doors
               (progn
                 (setq j 0)
@@ -827,8 +569,6 @@
                 )
               )
             )
-
-            ;; Find and update connected windows
             (if all-windows
               (progn
                 (setq j 0)
@@ -849,15 +589,12 @@
     )
     (princ "\nNo space boundaries found on layer 'Space'.")
   )
-
-  (vla-endundomark adoc)
-  (princ "\n\n--- SYNCHRONIZATION COMPLETE ---")
-  (princ)
+  (princ "\n--- SYNCHRONIZATION COMPLETE ---")
 )
 
 (defun run-calc-net-area-logic ( / all-units-ss i unit-ent unit-obj unit-area unit-vertices unit-detail-ss unit-detail-obj unit-num-val spaces-ss j space-ent space-obj space-vertices space-area space-detail-ss space-detail-obj space-usage bed-count bath-count total-deduction-area all-deductions-area void-shaft-area unit-classification duplex-level net-area)
   (princ "\n\n--- STARTING NET AREA AND ROOM COUNT CALCULATION ---")
-  (setq all-units-ss (ssget "_X" '((0 . "LWPOLYLINE") (8 . "Unit") (-4 . "&amp;") (70 . 1))))
+  (setq all-units-ss (ssget "_X" '((0 . "LWPOLYLINE") (8 . "Unit") (-4 . "&") (70 . 1))))
   (if all-units-ss
     (progn
       (setq i 0)
@@ -866,7 +603,7 @@
         (setq unit-obj (vlax-ename->vla-object unit-ent))
         (setq unit-area (vla-get-area unit-obj))
         (setq unit-vertices (get-polyline-vertices unit-ent))
-        (princ (strcat "\n\nProcessing Unit: " (vla-get-handle (vlax-ename->vla-object unit-ent))))
+        (princ (strcat "\n\nProcessing Unit: " (vla-get-handle unit-obj)))
         (princ (strcat "\n  - Gross Area: " (rtos unit-area)))
         (setq total-deduction-area 0.0 all-deductions-area 0.0 void-shaft-area 0.0 bed-count 0 bath-count 0)
         (setq unit-detail-ss (ssget "_CP" unit-vertices '((0 . "INSERT") (2 . "UnitDetail"))))
@@ -884,9 +621,9 @@
                   (setq space-area (vla-get-area space-obj))
                   (setq space-vertices (get-polyline-vertices space-ent))
                   (setq space-detail-ss (ssget "_CP" space-vertices '((0 . "INSERT") (2 . "SpaceDetail"))))
-                  (if (and space-detail-ss (= 1 (sslength space-detail-set)))
+                  (if (and space-detail-ss (= 1 (sslength space-detail-ss)))
                     (progn
-                      (setq space-detail-obj (vlax-ename->vla-object (ssname space-detail-set 0)))
+                      (setq space-detail-obj (vlax-ename->vla-object (ssname space-detail-ss 0)))
                       (setq space-usage (strcase (get-attribute-value space-detail-obj "SPACEUSAGE")))
                       (princ (strcat "\n    - Found Space with usage: '" space-usage "'. Area: " (rtos space-area)))
                       (if (and (wcmatch space-usage "*BATH*,*WC*,*W.C*,*TOILET*") (not (wcmatch space-usage "*MAID*")))
@@ -982,7 +719,9 @@
       )
     )
     (if adoc (vla-endundomark adoc))
-    (if (not (wcmatch (strcase msg) "*QUIT*,*CANCEL*")) (princ (strcat "\nError: " msg)))
+    (if (not (wcmatch (strcase msg) "*QUIT*,*CANCEL*"))
+      (princ (strcat "\nError: " msg))
+    )
     (princ)
   )
 
@@ -1105,292 +844,3 @@
 (princ "\n- Door material modification")
 (princ "\n- Individual operation selection")
 (princ)
-                    </code></pre>
-                </section>
-
-                <section>
-                    <h2>AutoDPL B - v01.lsp</h2>
-                    <p>This LISP routine automatically creates linear dimensions around selected polylines in AutoCAD. It calculates the bounding box of the selected polylines and then generates dimensions on all four sides (bottom, right, top, left). Users can specify an offset distance for these dimensions, or the routine will use a default based on DIMSCALE and DIMTXT system variables. This is useful for quickly dimensioning the overall extent of a drawing element.</p>
-                    <pre><code class="lisp">
-(defun c:AutoDPL (/ ss i ent entlist pts allpts minX maxX minY maxY dimGap userGap input)
-  (vl-load-com) 
-  
-  ;; Ask user for offset
-  (initget 6) ; restrict to positive numbers only
-  (setq userGap (getdist "\nEnter offset distance for dimensions <default = 3×DIMSCALE×DIMTXT>: "))
-
-  ;; Use user input or default
-  (setq dimGap 
-        (if userGap
-          userGap
-          (* 3.0 (getvar "DIMSCALE") (getvar "DIMTXT"))
-        )
-  )
-
-  ;; Select all LWPOLYLINEs
-  (setq ss (ssget '((0 . "LWPOLYLINE"))))
-  (if ss
-    (progn
-      (setq i 0 allpts '())
-      (while (< i (sslength ss))
-        (setq ent (ssname ss i)
-              entlist (entget ent)
-        )
-        (foreach pair entlist
-          (if (= (car pair) 10)
-            (setq allpts (cons (cdr pair) allpts))
-          )
-        )
-        (setq i (1+ i))
-      )
-
-      ;; Find bounding box
-      (setq minX (apply 'min (mapcar 'car allpts)))
-      (setq maxX (apply 'max (mapcar 'car allpts)))
-      (setq minY (apply 'min (mapcar 'cadr allpts)))
-      (setq maxY (apply 'max (mapcar 'cadr allpts)))
-
-      ;; Start UNDO group
-      (command "UNDO" "BEGIN")
-
-      ;; Draw dimensions: bottom, right, top, left
-      (command "DIMLINEAR" (list minX minY) (list maxX minY) (list (/ (+ minX maxX) 2) (- minY dimGap)) "")
-      (command "DIMLINEAR" (list maxX minY) (list maxX maxY) (list (+ maxX dimGap) (/ (+ minY maxY) 2)) "")
-      (command "DIMLINEAR" (list maxX maxY) (list minX maxY) (list (/ (+ minX maxX) 2) (+ maxY dimGap)) "")
-      (command "DIMLINEAR" (list minX maxY) (list minX minY) (list (- minX dimGap) (/ (+ minY maxY) 2)) "")
-
-      (command "UNDO" "END")
-    )
-    (prompt "\nNothing selected.")
-  )
-  (princ)
-)
-                    </code></pre>
-                </section>
-
-                <section>
-                    <h2>COPYINSIDE-ALLTYPES_Version3.lsp</h2>
-                    <p>This LISP routine facilitates copying AutoCAD objects based on a user-defined closed polyline boundary. Users can either draw a new boundary or select an existing one. The script then identifies and copies all objects that are either entirely contained within the boundary or are crossing it, using a specified base point and displacement. This is highly useful for isolating and duplicating specific parts of a drawing.</p>
-                    <pre><code class="lisp">
-(defun c:COPYINSIDE (/ *error* ss base_pt disp_pt old_echo pline_ent pt_list keep_poly 
-                       ;;; --- New variables for offset functionality ---
-                       offset_dist selection_boundary temporary_boundary offset_pline)
-
-  ;; --- Error handler to restore settings ---
-  (defun *error* (msg)
-    (setvar "CMDECHO" old_echo)
-    (if (and temporary_boundary (entget selection_boundary)) ; Ensure temp boundary is deleted on error
-        (entdel selection_boundary)
-    )
-    (princ)
-  )
-
-  ;; --- Setup ---
-  (setq old_echo (getvar "CMDECHO"))
-  (setvar "CMDECHO" 0)
-
-  ;;; --- Updated version information ---
-  (princ "\n--- Copy Inside Polygon (v4.0 - Offset & Keep Polygon) ---")
-  (princ "\nDraw your polygon using polyline. Use A for arcs, L for lines.")
-
-  ;; --- Let user draw a polyline ---
-  (command "_.PLINE")
-  (while (= (logand (getvar "CMDACTIVE") 1) 1)
-    (command pause)
-  )
-
-  ;; Get the last drawn polyline
-  (setq pline_ent (entlast))
-
-  ;; Validate the polyline
-  (if (and pline_ent
-           (= (cdr (assoc 0 (entget pline_ent))) "LWPOLYLINE")
-           (>= (cdr (assoc 90 (entget pline_ent))) 3))
-    (progn
-      
-      ;;; --- START: Added Offset Functionality ---
-
-      ;; --- Get offset distance ---
-      (setq offset_dist (getdist "\nEnter offset distance for selection boundary <0.0>: "))
-      (if (not offset_dist) (setq offset_dist 0.0)) ; Default to 0 if user presses Enter
-
-      ;; --- Determine the selection boundary (original or offset) ---
-      (setq selection_boundary pline_ent) ; Default to the polyline that was just drawn
-      (setq temporary_boundary nil)      ; A flag to tell us if we created a temporary entity
-
-      ;; If the user entered a valid offset distance, perform the offset
-      (if (> offset_dist 1e-6) ; Check for a small but positive distance
-        (progn
-          (command "_.OFFSET" offset_dist pline_ent)
-          (princ "\nSpecify a point on the side to offset for selection.")
-          (command PAUSE) ; Let the user click the side
-          (command "")    ; Exit the offset command cleanly
-          
-          (setq offset_pline (entlast)) ; The newly created offset polyline
-
-          ;; Check if the offset was successful and created a new entity
-          (if (and offset_pline (not (equal offset_pline pline_ent)))
-            (progn
-              (setq selection_boundary offset_pline) ; The new selection boundary is the offset polyline
-              (setq temporary_boundary T)            ; Mark that we created a temporary entity to be deleted later
-            )
-            (princ "\nOffset failed. Using original boundary.")
-          )
-        )
-      )
-      
-      ;; --- Get the selection boundary's vertex list ---
-      (setq pt_list nil)
-      (foreach pair (entget selection_boundary)
-        (if (= (car pair) 10)
-          (setq pt_list (append pt_list (list (cdr pair))))
-        )
-      )
-      
-      ;; --- Delete the temporary offset polyline if it was created ---
-      (if temporary_boundary
-        (entdel selection_boundary)
-      )
-
-      ;;; --- END: Added Offset Functionality ---
-
-
-      ;; --- Select objects completely inside the final boundary ---
-      (setq ss (ssget "_WP" pt_list))
-
-      ;; Ask if user wants to keep the *originally drawn* polygon
-      (initget "Yes No")
-      (setq keep_poly (getkword "\nKeep the originally drawn polygon? [Yes/No] <No>: "))
-      (if (or (not keep_poly) (= keep_poly "No"))
-        (entdel pline_ent)
-      )
-
-      ;; --- Proceed if selection found ---
-      (if ss
-        (progn
-          (princ (strcat "\n" (itoa (sslength ss)) " objects selected."))
-
-          ;; Get base and displacement points
-          (setq base_pt (getpoint "\nSpecify base point for copy: "))
-          (if base_pt
-            (progn
-              (setq disp_pt (getpoint base_pt "\nSpecify second point (displacement): "))
-              (if disp_pt
-                (command "_.COPY" ss "" "_non" base_pt "_non" disp_pt)
-              )
-            )
-          )
-        )
-        (princ "\nNo objects were found completely inside the selection boundary.")
-      )
-    )
-    (princ "\nInvalid polyline. Must contain at least 3 vertices.")
-  )
-
-  ;; Cleanup
-  (*error* nil)
-)
-
-;;; --- Updated load message ---
-(princ "\nLISP routine 'COPYINSIDE' (v4.0 - Offset & Keep Polygon) loaded. Type COPYINSIDE to run.")
-(princ)
-                    </code></pre>
-                </section>
-
-                <section>
-                    <h2>DECURVE.lsp</h2>
-                    <p>This LISP routine (command `Jm`) simplifies the process of combining multiple AutoCAD entities into a single polyline. Users select LWPOLYLINES, CIRCLES, and ARCS, and the script then uses the PEDIT command to join them, creating a continuous polyline. This is useful for consolidating drawing elements into a unified object.</p>
-                    <pre><code class="lisp">
-(defun c:Jm ()
-  (vl-load-com) ; Load Visual LISP extensions
-  (setq ss (ssget '((0 . "LWPOLYLINE,CIRCLE,ARC")))) ; Select polylines, arcs, and circles
-
-  (if ss
-    (progn
-      (command "_.PEDIT" "_M" ss "_J" "_Y" "") ; Join selected objects
-      (princ "\nSuccessfully joined the selected objects into a single polyline.")
-    )
-    (princ "\nNo valid objects selected.")
-  )
-  (princ)
-)
-                    </code></pre>
-                </section>
-
-                <section>
-                    <h2>dups.lsp</h2>
-                    <p>This LISP routine (command `vs`) helps identify and visualize duplicate vertices in LWPOLYLINES within an AutoCAD drawing. It processes selected polylines, detects vertices that are coincident or very close to each other (within a defined fuzz distance), and then interactively zooms to each duplicate location, marking it with a temporary circle. This is a valuable tool for cleaning up polyline geometry and ensuring data integrity.</p>
-                    <pre><code class="lisp">
-(defun vs ( / e i s )
-   (if (setq s (ssget "_x" '((0 . "LWPOLYLINE"))))
-       (repeat (setq i (sslength s)))
-           (foreach x
-               (LM:ListDupesFuzz
-                   (vl-remove-if-not ' (lambda ( x ) (= 10 (car x)))
-                       (setq e (entget (ssname s (setq i (1- i)))))
-                   )
-                   1e-8
-               )
-               (command "_.zoom" "_Object"
-                   (entmakex
-                       (list
-                          '(0 . "CIRCLE")
-                          '(8 . "Duplicate-Vertices") ;; Layer
-                           x
-                          '(40 . 1.0) ;; Radius
-                          '(62 . 1)   ;; Colour
-                           (assoc 210 e)
-                       )
-                   )
-                   ""
-               )
-               (princ "\nPress any key to view next duplicate...")
-               (grread)
-           )
-       )
-   )
-   (princ)
-)
-
-;; List Duplicates with Fuzz  -  Lee Mac
-;; Returns a list of items appearing more than once in a supplied list
-
-(defun LM:ListDupesFuzz ( l f / c r x )
-   (while l
-       (setq x (car l)
-             c (length l)
-             l (vl-remove-if ' (lambda ( y ) (equal x y f)) (cdr l))
-       )
-       (if (< (length l) (1- c))
-           (setq r (cons x r))
-       )
-   )
-   (reverse r)
-)
-(princ)
-                    </code></pre>
-                </section>
-
-                <section>
-                    <h2>explodeAll2 .lsp</h2>
-                    <p>This LISP routine (command `expl`) provides a quick way to manage the explodability of all blocks in an AutoCAD drawing. Users can choose to set all blocks as either explodable or non-explodable, excluding XREFs and layout blocks. This is particularly useful for controlling how blocks behave when the EXPLODE command is used, enhancing drawing integrity or facilitating mass editing.</p>
-                    <pre><code class="lisp">
-(defun c:expl (/ f)
-  ;; RJP © 2020-02-12
-  (initget "E N")
-  (setq	(cond	((= "E" (getkword "\nBlocks [Explodable/NON_Explodable]<Explodable>: ")) -1)
-		(0)
-	  )
-  )
-  (vlax-for b (vla-get-blocks (vla-get-activedocument (vlax-get-acad-object)))
-    (and (= 0 (vlax-get b 'isxref) (vlax-get b 'islayout)) (vlax-put b 'explodable f))
-  )
-  (princ)
-)
-(vl-load-com)
-                    </code></pre>
-                </section>
-
-                <section>
-                    <h2>lineWeightZoomExtents.lsp</h2>
-                    <p>This LISP routine (command `LWZE`) provides a quick utility to enhance drawing visibility. It automatically turns on the display of lineweights in AutoCAD and then performs a
