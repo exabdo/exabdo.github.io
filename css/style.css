@@ -22,6 +22,8 @@ body {
     flex-direction: column;
     min-height: 100vh;
     padding-bottom: 40px; /* Adjusted padding to prevent content from being hidden by fixed footer */
+    padding-left: 5%; /* Added 5% padding to the left */
+    padding-right: 5%; /* Added 5% padding to the right */
 }
 
 .container {

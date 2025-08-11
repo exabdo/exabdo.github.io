@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BLOOM TOLEDO | Abdalrahman Elsheikh</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/portfolio.css">
+    <style>
+        .flipbook-viewport { width: 90vw; height: 80vh; margin: auto; position: relative; }
+        .flipbook { width: 800px; height: 600px; margin: auto; }
+        .flipbook .page, .flipbook .hard { width: 400px; height: 600px; }
+        .flipbook .page img { width: 100%; height: 100%; object-fit: contain; }
+        .nav-button { position: fixed; top: 50%; z-index: 10; background: rgba(0,0,0,0.3); color: #fff; border: none; border-radius: 50%; width: 48px; height: 48px; font-size: 2em; display: flex; align-items: center; justify-content: center; cursor: pointer; transform: translateY(-50%); }
+        #prev-button { left: 0; } /* Adjusted to max left */
+        #next-button { right: 0; } /* Adjusted to max right */
+        .project-description { padding: 2rem; text-align: center; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <img src="assets/myphto.jpg" alt="Abdalrahman Elsheikh's Photo" class="logo">
+       
+            <h1 class="fade-in">Abdalrahman Elsheikh</h1>
+            <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="code.html">Code</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="about.html">About Me</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="ideas.html" class="active">Ideas</a></li>
+            </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="project-description">
+            <h2>BLOOM TOLEDO</h2>
+            <p>BLOOM TOLEDO is a testament to the beauty of minimalist design. The challenge was to create a space that is both inviting and impressive, using a palette of clean lines and simple forms. The result is a residence that exudes a sense of calm and sophistication. I am particularly proud of the way the natural materials are integrated into the design, creating a warm and organic feel. This project taught me the power of restraint in architecture, and how sometimes the most simple ideas can be the most profound.</p>
+        </div>
+        <div class="flipbook-viewport">
+            <div id="flipbook" class="flipbook">
+                <!-- Cover -->
+                <div class="hard"></div>
+                <div class="hard"></div>
+                <!-- Project images -->
+                <div class="page"><img src="assets/Projects PHOTO/BLOOM TOLEDO/2.Actual Front Elevation conv 1.png" alt="BLOOM TOLEDO"></div>
+                <div class="page"><img src="assets/Projects PHOTO/BLOOM TOLEDO/3.Actual Rear Elevation conv 1.png" alt="BLOOM TOLEDO"></div>
+                <div class="page"><img src="assets/Projects PHOTO/BLOOM TOLEDO/4. Actual Left Elevation conv 1.png" alt="BLOOM TOLEDO"></div>
+                <div class="page"><img src="assets/Projects PHOTO/BLOOM TOLEDO/4.Ground Floor Actual conv 1.png" alt="BLOOM TOLEDO"></div>
+                <div class="page"><img src="assets/Projects PHOTO/BLOOM TOLEDO/5.First Floor Actual conv 1.png" alt="BLOOM TOLEDO"></div>
+                <div class="page"><img src="assets/Projects PHOTO/BLOOM TOLEDO/6.Roof Floor Actual conv 1.png" alt="BLOOM TOLEDO"></div>
+                <!-- Add more pages as needed -->
+                <div class="hard"></div>
+                <div class="hard"></div>
+            </div>
+        </div>
+    </main>
+    <footer>
+            
+                <p>&copy; 2025 Abdalrahman Elsheikh. Built with passion and code.</p>
+            
+        </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="lib/turnjs/turn.min.js"></script>
+    <script>
+        $(function() {
+            $("#flipbook").turn({
+                width: '100%',
+                height: '100%',
+                autoCenter: true,
+                elevation: 50,
+                gradients: true,
+                display: 'double'
+            });
+
+            $('#prev-button').click(function(){
+                $("#flipbook").turn('previous');
+            });
+            $('#next-button').click(function(){
+                $("#flipbook").turn('next');
+            });
+        });
+    </script>
+    <button id="prev-button" class="nav-button">&#9664;</button>
+    <button id="next-button" class="nav-button">&#9654;</button>
+</body>
+</html>

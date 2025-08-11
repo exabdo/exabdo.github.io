@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>bURTIVILLE C2 | Abdalrahman Elsheikh</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/portfolio.css">
+    <style>
+        .flipbook-viewport { width: 90vw; height: 80vh; margin: auto; position: relative; }
+        .flipbook { width: 800px; height: 600px; margin: auto; }
+        .flipbook .page, .flipbook .hard { width: 400px; height: 600px; }
+        .flipbook .page img { width: 100%; height: 100%; object-fit: contain; }
+        .nav-button { position: fixed; top: 50%; z-index: 10; background: rgba(0,0,0,0.3); color: #fff; border: none; border-radius: 50%; width: 48px; height: 48px; font-size: 2em; display: flex; align-items: center; justify-content: center; cursor: pointer; transform: translateY(-50%); }
+        #prev-button { left: 0; } /* Adjusted to max left */
+        #next-button { right: 0; } /* Adjusted to max right */
+        .project-description { padding: 2rem; text-align: center; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <img src="assets/myphto.jpg" alt="Abdalrahman Elsheikh's Photo" class="logo">
+       
+            <h1 class="fade-in">Abdalrahman Elsheikh</h1>
+            <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="code.html">Code</a></li>
+                <li><a href="portfolio.html">Portfolio</a></li>
+                <li><a href="about.html">About Me</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li><a href="ideas.html" class="active">Ideas</a></li>
+            </ul>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <div class="project-description">
+            <h2>bURTIVILLE C2</h2>
+            <p>In bURTIVILLE C2, the design narrative is one of refined elegance. This project was an exercise in creating a luxurious and sophisticated environment, where every detail is carefully considered. The use of premium materials and finishes, combined with a thoughtful layout, creates a sense of opulence and comfort. I was inspired by the idea of creating a sanctuary in the city, a place where residents can escape the everyday and indulge in a world of beauty and tranquility. The result is a project that is both timeless and contemporary, a true gem in the heart of the city.</p>
+        </div>
+        <div class="flipbook-viewport">
+            <div id="flipbook" class="flipbook">
+                <!-- Cover -->
+                <div class="hard"></div>
+                <div class="hard"></div>
+                <!-- Project images -->
+                <div class="page"><img src="assets/Projects PHOTO/bURTIVILLE C2/View_01 Final.jpg" alt="bURTIVILLE C2"></div>
+                <div class="page"><img src="assets/Projects PHOTO/bURTIVILLE C2/View_02 Final.jpg" alt="bURTIVILLE C2"></div>
+                <div class="page"><img src="assets/Projects PHOTO/bURTIVILLE C2/View_03 Final.jpg" alt="bURTIVILLE C2"></div>
+                <div class="page"><img src="assets/Projects PHOTO/bURTIVILLE C2/View_04 Final.jpg" alt="bURTIVILLE C2"></div>
+                <!-- Add more pages as needed -->
+                <div class="hard"></div>
+                <div class="hard"></div>
+            </div>
+        </div>
+    </main>
+    <footer>
+            
+                <p>&copy; 2025 Abdalrahman Elsheikh. Built with passion and code.</p>
+            
+        </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="lib/turnjs/turn.min.js"></script>
+    <script>
+        $(function() {
+            $("#flipbook").turn({
+                width: '100%',
+                height: '100%',
+                autoCenter: true,
+                elevation: 50,
+                gradients: true,
+                display: 'double'
+            });
+
+            $('#prev-button').click(function(){
+                $("#flipbook").turn('previous');
+            });
+            $('#next-button').click(function(){
+                $("#flipbook").turn('next');
+            });
+        });
+    </script>
+    <button id="prev-button" class="nav-button">&#9664;</button>
+    <button id="next-button" class="nav-button">&#9654;</button>
+</body>
+</html>
