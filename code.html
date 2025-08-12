@@ -23,6 +23,7 @@
         .code-page-wrapper {
             position: relative;
             z-index: 1;
+            padding-top: 80px; /* Adjust this value to match your header's height */
         }
         /* New class for semi-transparent content background */
         .code-content {
@@ -31,6 +32,17 @@
             border-radius: 8px;
             border: 1px solid #333;
         }
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            transition: top 0.3s;
+            z-index: 1000;
+        }
+
+        .header-hidden {
+            top: -100px; /* Adjust this value based on header height */
+        }
     </style>
 </head>
 <body>
@@ -38,7 +50,7 @@
     <div class="code-page-wrapper">
         <header>
                    <div class="nav-container">
-            <img src="https://via.placeholder.com/150.png?text=Logo" alt="Logo" class="logo">
+            <img src="assets/myphto.jpg" alt="Abdalrahman Elsheikh's Photo" class="logo">
        
             <h1 class="fade-in">Abdalrahman Elsheikh</h1>
             <nav>
@@ -1452,6 +1464,21 @@ def analyze_data(input_fc):
         }
 
         setInterval(draw, 100);
+
+        let lastScrollTop = 0;
+        const header = document.querySelector('header');
+
+        window.addEventListener('scroll', function() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (scrollTop > lastScrollTop) {
+                // Downscroll
+                header.classList.add('header-hidden');
+            } else {
+                // Upscroll
+                header.classList.remove('header-hidden');
+            }
+            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // For Mobile or negative scrolling
+        });
     </script>
 </body>
 

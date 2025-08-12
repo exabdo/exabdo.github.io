@@ -6,13 +6,27 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/portfolio.css">
     <style>
-        .flipbook-viewport { width: 90vw; height: 80vh; margin: auto; position: relative; }
+        .flipbook-viewport { width: 90vw; height: 100vh; margin: auto; position: relative; }
         .flipbook { width: max-content; height: max-content; margin: auto; }
         .flipbook .page, .flipbook .hard { width: max-content; height: max-content; }
         .flipbook .page img { width: 100%; height: 100%; object-fit: contain; }
         .nav-button { position: fixed; top: 50%; z-index: 10; background: rgba(0,0,0,0.3); color: #fff; border: none; border-radius: 50%; width: 48px; height: 48px; font-size: 2em; display: flex; align-items: center; justify-content: center; cursor: pointer; transform: translateY(-50%); }
         #prev-button { left: 0; } /* Adjusted to max left */
         #next-button { right: 0; } /* Adjusted to max right */
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            transition: top 0.4s ease-in-out;
+            z-index: 1001; /* Ensure header is on top */
+        }
+
+        header.hidden {
+            top: -150px; /* Hides the header. Adjust if header height changes */
+        }
+
     </style>
 </head>
 <body>
@@ -39,24 +53,113 @@
             <div id="flipbook" class="flipbook">
                 <!-- Cover -->
                 <div class="hard"></div>
-                <div class="hard"></div>
+                <div class="page"><img src="assets/SAMPLES/050825_134_PLANS_PDSUBMISSION-1-FN-1450599.jpg" alt=""></div>
                 <!-- Your images/pages -->
-                <div class="page"><img src="assets/anger hourse garden.jpg" alt=""></div>
-                <div class="page"><img src="assets/best emplyee.jpg" alt=""></div>
-                <div class="page"><img src="assets/Elevation.bmp" alt=""></div>
-                <div class="page"><img src="assets/hourse garden.jpg" alt=""></div>
-                <div class="page"><img src="assets/myphto.jpg" alt=""></div>
-                <div class="page"><img src="assets/personal infront emirates.jpg" alt=""></div>
-                <div class="page"><img src="assets/personal infront imarates.jpg" alt=""></div>
-                <div class="page"><img src="assets/point to emirates garden.jpg" alt=""></div>
-                <div class="page"><img src="assets/render 3d (2).jpg" alt=""></div>
-                <div class="page"><img src="assets/render 3d.jpg" alt=""></div>
-                <div class="page"><img src="assets/render tamouh tower.jpg" alt=""></div>
-                <div class="page"><img src="assets/ship in sea.jpg" alt=""></div>
-                <div class="page"><img src="assets/while rendering.jpeg" alt=""></div>
-                <div class="page"><img src="assets/wood on site (2).jpg" alt=""></div>
-                <div class="page"><img src="assets/wood on site (3).jpg" alt=""></div>
-                <div class="page"><img src="assets/wood on site.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/050825_134_PLANS_PDSUBMISSION-2_30-Photo-1448320.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/191b52e3-16f7-4c4a-89fa-560440f76e9d.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/2.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/3D MODELS (1).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/3D MODELS (1).png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/3D MODELS (2).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/3D MODELS (2).png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/3D MODELS (3).png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/777-30-01-2025-001 copy.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/9207651e-89d6-49b5-a3cb-b11bb7528733.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/AD24005-UAI-ZZ-XX-DWG-AR-0004-PERSPECTIVES - SHEET 1 conv 1.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/AD24005-UAI-ZZ-XX-DWG-AR-0005-PERSPECTIVES - SHEET 2 conv 1.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/AlSondos-RE_DWC_RB-27_G4_P14_PO_CS.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Arch Drawings 10-11-2023_Stamped(11_27_2023) conv 7.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Arch Drawings 10-11-2023_Stamped(11_27_2023) conv 8.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/b675c1d3-9962-4f3f-981a-1bad889c7e0b.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/c0783eb8-e6ea-4c6a-a455-532686d0c466.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/c775ded6-d705-4538-a01d-756e5f38e408.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/c87cb24a-a272-4783-8d31-3e8a549feb21.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/c91b9af0-1c22-47dd-97d9-362009b31385.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/d9bea507-d3c3-4d66-be4c-5613f38df6c3.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/ede7e824-0e0f-487e-9c03-8c0224b87042.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/front 01 - low res 0B6FBBCB.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/IMG-20231030-WA0022.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/NIGHT_18 - Photo.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/NIGHT_20 - Photo.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/OP-1_1 - Photo.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/OP-1_10 - Photo.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/OP-1_11 - Photo.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/OP-1_13 - Photo.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/OP-1_2 - Photo.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/OP-1_3 - Photo.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/REPORTAGE (1).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/REPORTAGE (2).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/REPORTAGE (3).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/REPORTAGE (4).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/REPORTAGE.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/service kitchen-1.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/service kitchen-3.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SIDE VIEW 2 C245CE5D.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SIDE VIEW 3 1A76B1AB.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SORA.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA (1).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA (1).png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA (10).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA (11).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA (12).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA (13).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA (14).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA (2).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA (3).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA (4).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA (5).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA (6).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA (7).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA (8).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA (9).jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/TOP.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/USP.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/View01.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Master Developer Planning NOC Rev01 - S3-C34_Stamped(02_08_2024) conv/Master Developer Planning SHAMS TOWER ALREEM.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/P.2.6_Perspective Views SAAS HIEGHTS/P.2.6_Perspective Views conv 1.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/P.2.6_Perspective Views SAAS HIEGHTS/P.2.6_Perspective Views conv 2.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/P.2.6_Perspective Views SAAS HIEGHTS/P.2.6_Perspective Views conv 3.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0001.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0002.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0003.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0004.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0005.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0006.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0007.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0008.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0009.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0010.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0011.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0012.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0013.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0014.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0015.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0016.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0017.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0018.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0019.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND FLOORS 23-04-2025_page-0020.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Richmind OYSTRA/RICHMIND Sample 24-4-2025.jpg" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/Royal Park F10 ARCH R0.4 conv/Royal Park F10 ARCH R0.4 conv 5.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA Al-Andalusia Bottage Nove conv/SPA Al-Andalusia Bottage Nove conv 15.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA Al-Andalusia Bottage Nove conv/SPA Al-Andalusia Bottage Nove conv 16.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA Al-Andalusia Bottage Nove conv/SPA Al-Andalusia Bottage Nove conv 17.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA Al-Andalusia Bottage Nove conv/SPA Al-Andalusia Bottage Nove conv 18.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA Al-Andalusia Bottage Nove conv/SPA Al-Andalusia Bottage Nove conv 19.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA Al-Andalusia Bottage Nove conv/SPA Al-Andalusia Bottage Nove conv 20.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA Al-Andalusia Bottage Nove conv/SPA Al-Andalusia Bottage Nove conv 21.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA Al-Andalusia Bottage Nove conv/SPA Al-Andalusia Bottage Nove conv 22.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA Al-Andalusia Bottage Nove conv/SPA Al-Andalusia Bottage Nove conv 23.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA Al-Andalusia Bottage Nove conv/SPA Al-Andalusia Bottage Nove conv 24.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA Al-Andalusia Bottage Nove conv/SPA Al-Andalusia Bottage Nove conv 25.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA Al-Andalusia Bottage Nove conv/SPA Al-Andalusia Bottage Nove conv 26.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA Al-Andalusia Bottage Nove conv/SPA Al-Andalusia Bottage Nove conv 27.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA Al-Andalusia Bottage Nove conv/SPA Al-Andalusia Bottage Nove conv 28.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA Al-Andalusia Bottage Nove conv/SPA Al-Andalusia Bottage Nove conv 5.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA Al-Andalusia Bottage Nove conv/SPA Al-Andalusia Bottage Nove conv 6.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA Al-Andalusia Bottage Nove conv/SPA Al-Andalusia Bottage Nove conv 7.png" alt=""></div>
+                <div class="page"><img src="assets/SAMPLES/SPA Al-Andalusia Bottage Nove conv/SPA Al-Andalusia Bottage Nove conv 8.png" alt=""></div>
                 <!-- Back covers -->
                 <div class="hard"></div>
                 <div class="hard"></div>
@@ -110,6 +213,23 @@
             document.body.scrollTop = 0; // For Safari
             document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
         }
+
+        // Auto-hide header logic
+        const header = document.querySelector('header');
+
+        // Hide header after 2 seconds
+        setTimeout(() => {
+            header.classList.add('hidden');
+        }, 2000);
+
+        // Show header when mouse is at the top of the page
+        document.addEventListener('mousemove', function(e) {
+            if (e.clientY < 70) { // Show if mouse is in top 70px
+                header.classList.remove('hidden');
+            } else if (!header.matches(':hover')) {
+                header.classList.add('hidden');
+            }
+        });
     </script>
     <button id="prev-button" class="nav-button">&#9664;</button>
     <button id="next-button" class="nav-button">&#9654;</button>
