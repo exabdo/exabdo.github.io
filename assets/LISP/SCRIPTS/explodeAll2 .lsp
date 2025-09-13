@@ -1,0 +1,13 @@
+(defun c:expl (/ f)
+  ;; RJP » 2020-02-12
+  (initget "E N")
+  (setq	f (cond	((= "E" (getkword "\nBlocks [Explodable/NON_Explodable]<Explodable>: ")) -1)
+		(0)
+	  )
+  )
+  (vlax-for b (vla-get-blocks (vla-get-activedocument (vlax-get-acad-object)))
+    (and (= 0 (vlax-get b 'isxref) (vlax-get b 'islayout)) (vlax-put b 'explodable f))
+  )
+  (princ)
+)
+(vl-load-com)

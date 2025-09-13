@@ -18,19 +18,14 @@ body {
     color: var(--text-color);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding-bottom: 40px; /* Adjusted padding to prevent content from being hidden by fixed footer */
+    padding-left: 5%; /* Added 5% padding to the left */
+    padding-right: 5%; /* Added 5% padding to the right */
 }
-.header-container {
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    padding:2rem;
-}
-.footer-container {
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    padding: 0 2rem;
-}
+
 .container {
     max-width: 90%;
     margin: auto;
@@ -39,7 +34,6 @@ body {
 }
 html, body {
     height: 100%;
-    width: 100%;
     box-sizing: border-box;
 }
 
@@ -47,14 +41,9 @@ html, body {
     box-sizing: inherit;
 }
 
-body {
-    min-height: 100vh;
-    min-width: 100vw;
-}
-
-.page-wrapper, .container {
+.page-wrapper {
     width: 100%;
-    min-height: 100vh;
+    flex-grow: 1;
     box-sizing: border-box;
 }
 /* --- Typography --- */
@@ -93,10 +82,11 @@ header {
 }
 
 .logo {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--primary-color);
-    text-decoration: none;
+    width: 50px; /* Smaller size */
+    height: 50px; /* Smaller size */
+    border-radius: 50%; /* Make it circular */
+    object-fit: cover; /* Ensure the image covers the area without distortion */
+    margin-right: 10px; /* Add some space to the right of the logo */
 }
 
 header nav {
@@ -200,7 +190,7 @@ header nav a.active {
 
 
 /* --- Expertise Section --- */
-#expertise { padding: 5rem 0; }
+#expertise { padding: 0; max-width: 90%; }
 .skills-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -271,7 +261,9 @@ header nav a.active {
 .floating-bar a:hover { color: var(--secondary-color); transform: scale(1.1); }
 
 /* --- Album Gallery Page --- */
-.album-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
+.album-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+}
 .album-card {
     background: #fff;
     border-radius: var(--border-radius);
@@ -310,9 +302,14 @@ header nav a.active {
 /* --- Footer --- */
 footer {
     text-align: center;
-    padding: 1rem 0;
+    padding: 0.5rem 3%; /* Reduced padding */
     background: var(--dark-gray);
     color: #f4f4f4;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    left: 0;
+    z-index: 1000;
 }
 
 
@@ -360,4 +357,27 @@ footer {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+}
+
+/* Back to Top Button */
+#myBtn {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed/sticky position */
+    bottom: 20px; /* Place the button at the bottom of the page */
+    right: 30px; /* Place the button 30px from the right */
+    z-index: 99; /* Make sure it does not overlap */
+    border: none; /* Remove borders */
+    outline: none; /* Remove outline */
+    background-color: var(--primary-color); /* Set a background color */
+    color: white; /* Text color */
+    cursor: pointer; /* Add a mouse pointer on hover */
+    padding: 15px; /* Some padding */
+    border-radius: 10px; /* Rounded corners */
+    font-size: 18px; /* Increase font size */
+    box-shadow: var(--shadow);
+    transition: background-color 0.3s ease;
+}
+
+#myBtn:hover {
+    background-color: var(--secondary-color); /* Add a darker background on hover */
 }

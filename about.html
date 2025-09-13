@@ -18,7 +18,7 @@
     <div class="page-wrapper">
         <header>
         <div class="nav-container">
-            <img src="https://via.placeholder.com/150.png?text=Logo" alt="Logo" class="logo">
+            <img src="assets/myphto.jpg" alt="Abdalrahman Elsheikh's Photo" class="logo">
        
             <h1 class="fade-in">Abdalrahman Elsheikh</h1>
             <nav>
@@ -47,14 +47,51 @@
                         <li>Major: Urban and Regional Planning | Minor: Regional Planning</li>
                     </ul>
                 </section>
+            <section class="project-details" style="padding-top: 2rem; padding-bottom: 2rem;">
+                <h2 class="section-title">Professional Experience</h2>
+                <ul>
+                    <li class="fade-in"><strong>Building Architecture</strong> - GEOESTATE | Jan 2024 - Present </li>
+                    <li class="fade-in-delay1"><strong>Estimation Engineer</strong> - Portoro Marble | Jan 2023 - Jan 2024 </li>
+                    <li class="fade-in-delay2"><strong>Site Director</strong> - EXPRESS | Jun 2022 - Jan 2023 </li>
+                    <li class="fade-in-delay3"><strong>Site Engineer</strong> - EXPRESS | Jun 2020 - Jan 2022 </li>
+                </ul>
+            </section>
+
+            <section style="text-align: center; padding-top: 2rem;">
+                <a href="projects.html" class="btn btn-primary">View My Work</a>
+                <a href="contact.html" class="btn btn-secondary">Get In Touch</a>
+            </section>
             </div>
         </main>
 
         <footer>
-            <div class="footer-container">
+            
                 <p>&copy; 2025 Abdalrahman Elsheikh. Built with passion and code.</p>
-            </div>
+            
         </footer>
     </div>
+    <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+
+    <script>
+        // Get the button
+        let mybutton = document.getElementById("myBtn");
+
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() {scrollFunction()};
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+        }
+    </script>
 </body>
 </html>
