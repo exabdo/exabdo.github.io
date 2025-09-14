@@ -14,6 +14,32 @@
         #prev-button { left: 0; } /* Adjusted to max left */
         #next-button { right: 0; } /* Adjusted to max right */
         .project-description { padding: 2rem; text-align: center; } 
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            transition: top 0.4s ease-in-out;
+            z-index: 1001; /* Ensure header is on top */
+        }
+
+        header.hidden {
+            top: -150px; /* Hides the header. Adjust if header height changes */
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            transition: bottom 0.4s ease-in-out;
+            z-index: 1001; /* Ensure footer is on top */
+        }
+
+        footer.hidden {
+            bottom: -150px; /* Hides the footer. Adjust if footer height changes */
+        }
     </style>
 </head>
 <body>
@@ -82,6 +108,40 @@
             $('#next-button').click(function(){
                 $("#flipbook").turn('next');
             });
+        });
+
+        // Auto-hide header logic
+        const header = document.querySelector('header');
+
+        // Hide header after 2 seconds
+        setTimeout(() => {
+            header.classList.add('hidden');
+        }, 2000);
+
+        // Show header when mouse is at the top of the page
+        document.addEventListener('mousemove', function(e) {
+            if (e.clientY < 70) { // Show if mouse is in top 70px
+                header.classList.remove('hidden');
+            } else if (!header.matches(':hover')) {
+                header.classList.add('hidden');
+            }
+        });
+
+        // Auto-hide footer logic
+        const footer = document.querySelector('footer');
+
+        // Hide footer after 2 seconds
+        setTimeout(() => {
+            footer.classList.add('hidden');
+        }, 2000);
+
+        // Show footer when mouse is at the bottom of the page
+        document.addEventListener('mousemove', function(e) {
+            if (window.innerHeight - e.clientY < 70) { // Show if mouse is in bottom 70px
+                footer.classList.remove('hidden');
+            } else if (!footer.matches(':hover')) {
+                footer.classList.add('hidden');
+            }
         });
     </script>
     <button id="prev-button" class="nav-button">&#9664;</button>
